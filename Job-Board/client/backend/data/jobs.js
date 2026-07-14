@@ -1,0 +1,123 @@
+const jobs = [
+  {
+    id: 1,
+    title: "Frontend Developer",
+    company: "Google",
+    location: "Bangalore",
+    category: "Software Development",
+    salary: 1200000,
+    salaryText: "₹12 LPA",
+    type: "Full Time",
+    posted: "2 days ago",
+    skills: ["React", "JavaScript", "Tailwind CSS"],
+    description:
+      "Build modern, responsive web applications using React and Tailwind CSS.",
+  },
+
+  {
+    id: 2,
+    title: "Backend Developer",
+    company: "Microsoft",
+    location: "Hyderabad",
+    category: "Software Development",
+    salary: 1500000,
+    salaryText: "₹15 LPA",
+    type: "Full Time",
+    posted: "1 day ago",
+    skills: ["Node.js", "Express", "MongoDB"],
+    description:
+      "Develop scalable backend APIs and microservices using Node.js.",
+  },
+
+  {
+    id: 3,
+    title: "Data Analyst",
+    company: "Deloitte",
+    location: "Chennai",
+    category: "Data Analytics",
+    salary: 1000000,
+    salaryText: "₹10 LPA",
+    type: "Hybrid",
+    posted: "3 days ago",
+    skills: ["SQL", "Python", "Power BI"],
+    description:
+      "Analyze business data and create dashboards for decision-making.",
+  },
+
+  {
+    id: 4,
+    title: "UI/UX Designer",
+    company: "Adobe",
+    location: "Remote",
+    category: "Design",
+    salary: 900000,
+    salaryText: "₹9 LPA",
+    type: "Remote",
+    posted: "5 days ago",
+    skills: ["Figma", "Adobe XD", "Photoshop"],
+    description:
+      "Design beautiful and user-friendly interfaces for web and mobile applications.",
+  },
+
+  {
+    id: 5,
+    title: "Full Stack Developer",
+    company: "Amazon",
+    location: "Hyderabad",
+    category: "Software Development",
+    salary: 1800000,
+    salaryText: "₹18 LPA",
+    type: "Full Time",
+    posted: "Today",
+    skills: ["React", "Node.js", "MongoDB"],
+    description:
+      "Develop full-stack web applications using the MERN stack.",
+  },
+
+  {
+    id: 6,
+    title: "Cloud Engineer",
+    company: "Amazon Web Services",
+    location: "Pune",
+    category: "Cloud Computing",
+    salary: 1700000,
+    salaryText: "₹17 LPA",
+    type: "Full Time",
+    posted: "Today",
+    skills: ["AWS", "Docker", "Kubernetes"],
+    description:
+      "Build and maintain scalable cloud infrastructure on AWS.",
+  },
+
+  {
+    id: 7,
+    title: "Cyber Security Analyst",
+    company: "Accenture",
+    location: "Bangalore",
+    category: "Cyber Security",
+    salary: 1300000,
+    salaryText: "₹13 LPA",
+    type: "Hybrid",
+    posted: "4 days ago",
+    skills: ["SIEM", "Network Security", "Linux"],
+    description:
+      "Protect enterprise systems against cyber threats and vulnerabilities.",
+  },
+
+  {
+    id: 8,
+    title: "AI/ML Engineer",
+    company: "NVIDIA",
+    location: "Bangalore",
+    category: "Artificial Intelligence",
+    salary: 2200000,
+    salaryText: "₹22 LPA",
+    type: "Full Time",
+    posted: "1 week ago",
+    skills: ["Python", "TensorFlow", "PyTorch"],
+    description:
+      "Develop machine learning models for AI-powered products.",
+  },
+];
+
+module.exports = jobs;

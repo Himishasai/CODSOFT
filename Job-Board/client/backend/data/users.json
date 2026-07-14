@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "B Sai Himisha",
+    "email": "saihimisha27@gmail.com",
+    "password": "$2b$10$5cLilFlr6W/1BwuYAkW/Bu5.ekfn9qZ7y9e1cnPhuX9aUV4.9aXEm"
+  },
+  {
+    "id": 2,
+    "name": "ram",
+    "email": "ram1234@gmail.com",
+    "password": "$2b$10$1Z4xANPartST/mCXyw7eMOtgfNcxFk042KiaJxDUVAz0oSe7m1LNO"
+  }
+]

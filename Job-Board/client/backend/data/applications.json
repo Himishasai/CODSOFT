@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "jobId": 3,
+    "jobTitle": "Data Analyst",
+    "company": "Deloitte",
+    "name": "B Sai Himisha",
+    "email": "saihimisha27@gmail.com",
+    "phone": "7730974235",
+    "location": "chennai",
+    "experience": "2",
+    "resume": "",
+    "coverLetter": "",
+    "appliedAt": "14/7/2026, 12:00:35 am"
+  },
+  {
+    "id": 3,
+    "jobId": 1,
+    "jobTitle": "Frontend Developer",
+    "company": "Google",
+    "name": "B Loukya Sree",
+    "email": "loukya@gmail.com",
+    "phone": "08919543222",
+    "location": "Vijayawada",
+    "experience": "-10",
+    "resume": "",
+    "coverLetter": "",
+    "appliedAt": "14/7/2026, 12:10:01 am"
+  }
+]
