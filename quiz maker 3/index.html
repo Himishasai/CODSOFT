@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChalkQuiz — Play & Create Quizzes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>
+  (function() {
+    var saved = localStorage.getItem('qm_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+  })();
+</script>
+</head>
+<body>
+
+<!-- HEADER / NAVBAR -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo" data-nav="home">
+      <div class="logo-icon">✎</div>
+      <span class="logo-text">Chalk<em>Quiz</em></span>
+    </a>
+    
+    <nav class="main-nav" id="mainNav">
+      <button class="nav-item active" data-nav="home">Home</button>
+      <button class="nav-item" data-nav="browse">Browse</button>
+      <button class="nav-item" data-nav="create">Create</button>
+      <button class="nav-item" data-nav="analytics">Stats</button>
+    </nav>
+
+    <div class="header-right">
+      <div class="user-stats" id="userStats" hidden>
+        <div class="stat-item streak-stat" id="streakBadge" title="Daily Streak">
+          <span class="stat-icon">🔥</span>
+          <span class="stat-value" id="streakValue">0</span>
+        </div>
+        <div class="stat-item xp-stat">
+          <span class="stat-icon">⭐</span>
+          <span class="stat-value" id="xpLevelDisplay">Lvl 1</span>
+          <div class="xp-mini-bar">
+            <div class="xp-mini-fill" id="xpMiniFill"></div>
+          </div>
+        </div>
+        <div class="user-avatar" id="userAvatar">U</div>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">Log out</button>
+      </div>
+      <div class="auth-buttons" id="authButtons">
+        <button class="btn btn-ghost" data-nav="auth">Log in</button>
+        <button class="btn btn-primary" data-nav="auth">Sign up</button>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+      <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">🔊</button>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <button class="modal-close" data-close-modal>&times;</button>
+      <div class="modal-header">
+        <h2>Welcome to ChalkQuiz</h2>
+        <p>Play quizzes or create your own</p>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tab="login">Log in</button>
+        <button class="tab" data-tab="signup">Sign up</button>
+      </div>
+      
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="loginUsername" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" required>
+        </div>
+        <p class="form-error" id="loginError"></p>
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="signupUsername" placeholder="Choose a username" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signupPassword" placeholder="Create a password" minlength="4" required>
+        </div>
+        <p class="form-error" id="signupError"></p>
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- HOME VIEW -->
+  <section id="view-home" class="view">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">Play & Create <span class="gradient-text">Quizzes</span></h1>
+        <p class="hero-subtitle">Challenge yourself with thousands of quizzes or create your own. Track your progress, earn XP, and climb the leaderboard!</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" data-nav="browse">
+            <span>▶</span> Start Playing
+          </button>
+          <button class="btn btn-secondary btn-lg" data-nav="create">
+            <span>✎</span> Create Quiz
+          </button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="floating-card card-1">📊 92%</div>
+        <div class="floating-card card-2">⭐ Lvl 15</div>
+        <div class="floating-card card-3">🔥 7 days</div>
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Browse by Category</h2>
+        <button class="btn btn-ghost btn-sm" data-nav="browse">View all →</button>
+      </div>
+      <div class="categories-grid" id="categoriesGrid"></div>
+    </section>
+
+    <!-- Featured Quizzes -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Featured Quizzes</h2>
+        <button class="btn btn-ghost btn-sm" data-nav="browse">View all →</button>
+      </div>
+      <div class="quiz-grid" id="featuredQuizzes"></div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="section quick-actions">
+      <button class="quick-action-btn" data-random="true">
+        <span class="quick-icon">🎲</span>
+        <span class="quick-text">Random Quiz</span>
+      </button>
+      <button class="quick-action-btn" data-nav="analytics">
+        <span class="quick-icon">📊</span>
+        <span class="quick-text">My Stats</span>
+      </button>
+      <button class="quick-action-btn" data-nav="leaderboard">
+        <span class="quick-icon">🏆</span>
+        <span class="quick-text">Leaderboard</span>
+      </button>
+    </section>
+
+    <!-- Recent Results (logged in) -->
+    <section class="section" id="recentSection" hidden>
+      <div class="section-header">
+        <h2>Your Recent Scores</h2>
+      </div>
+      <div class="results-strip" id="recentResults"></div>
+    </section>
+
+    <!-- Favorites (logged in) -->
+    <section class="section" id="favoritesSection" hidden>
+      <div class="section-header">
+        <h2>⭐ Your Favorites</h2>
+      </div>
+      <div class="quiz-grid" id="favoritesList"></div>
+      <p class="empty-message" id="favoritesEmpty">Star a quiz to save it here!</p>
+    </section>
+
+    <!-- Achievements (logged in) -->
+    <section class="section" id="achievementsSection" hidden>
+      <div class="section-header">
+        <h2>Achievements</h2>
+      </div>
+      <div class="achievements-grid" id="achievementsList"></div>
+    </section>
+  </section>
+
+  <!-- BROWSE VIEW -->
+  <section id="view-browse" class="view hidden">
+    <div class="view-header">
+      <h1>Browse Quizzes</h1>
+      <p>Explore our collection of quizzes</p>
+    </div>
+
+    <div class="filters-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="browseSearch" placeholder="Search quizzes...">
+      </div>
+      <select id="filterCategory" class="filter-select">
+        <option value="">All Categories</option>
+      </select>
+      <select id="filterDifficulty" class="filter-select">
+        <option value="">All Difficulties</option>
+        <option>Easy</option>
+        <option>Medium</option>
+        <option>Hard</option>
+      </select>
+      <select id="filterBadge" class="filter-select">
+        <option value="">All Types</option>
+        <option value="new">🆕 New</option>
+        <option value="popular">🔥 Popular</option>
+        <option value="recommended">⭐ Recommended</option>
+      </select>
+      <button class="btn btn-secondary" data-random="true" title="Random Quiz">🎲 Random</button>
+    </div>
+
+    <div class="quiz-grid" id="browseQuizzes"></div>
+    <p class="empty-message" id="browseEmpty">No quizzes found matching your filters.</p>
+  </section>
+
+  <!-- CREATE VIEW -->
+  <section id="view-create" class="view hidden">
+    <div class="view-header">
+      <h1>Create a Quiz</h1>
+      <p>Build your own quiz and share it with others</p>
+    </div>
+
+    <form id="createForm" class="create-form">
+      <div class="form-section">
+        <div class="form-group">
+          <label>Quiz Title</label>
+          <input type="text" id="quizTitle" placeholder="e.g., HTML Basics Quiz" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="quizCategory"></select>
+          </div>
+          <div class="form-group">
+            <label>Difficulty</label>
+            <select id="quizDifficulty">
+              <option>Easy</option>
+              <option selected>Medium</option>
+              <option>Hard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Time per Question (sec)</label>
+            <input type="number" id="quizTimer" min="0" max="300" value="30">
+          </div>
+        </div>
+      </div>
+
+      <div class="questions-section">
+        <h3>Questions</h3>
+        <div id="questionList" class="question-list"></div>
+        <button type="button" class="btn btn-secondary" id="addQuestionBtn">+ Add Question</button>
+      </div>
+
+      <p class="form-error" id="createError"></p>
+      <button type="submit" class="btn btn-primary btn-lg">Publish Quiz</button>
+    </form>
+  </section>
+
+  <!-- QUIZ PLAY VIEW -->
+  <section id="view-quiz" class="view hidden">
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <div class="quiz-info">
+          <span class="quiz-badge" id="quizBadge"></span>
+          <h2 id="quizPlayTitle">Quiz Title</h2>
+          <p id="quizMeta">By Author • Easy • 5 questions</p>
+        </div>
+        <div class="quiz-timer" id="quizTimer">00:30</div>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="quizProgress"></div>
+      </div>
+
+      <div class="question-card" id="questionCard">
+        <div class="question-number" id="questionNumber">Question 1 of 5</div>
+        <h3 class="question-text" id="questionText">Question text goes here?</h3>
+        <div class="options-list" id="optionsList"></div>
+      </div>
+
+      <div class="quiz-footer">
+        <button class="btn btn-ghost" id="quitQuizBtn">Quit</button>
+        <button class="btn btn-primary" id="nextQuestionBtn" disabled>Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS VIEW -->
+  <section id="view-results" class="view hidden">
+    <div class="results-container">
+      <div class="results-header">
+        <div class="results-score" id="resultsScore">85%</div>
+        <h2 id="resultsTitle">Quiz Complete!</h2>
+        <p class="results-subtitle" id="resultsSubtitle">Great job! You scored 17 out of 20</p>
+      </div>
+
+      <div class="results-stats">
+        <div class="stat-card">
+          <span class="stat-icon">⭐</span>
+          <span class="stat-value" id="resultXP">+150 XP</span>
+          <span class="stat-label">XP Earned</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🎯</span>
+          <span class="stat-value" id="resultCorrect">17/20</span>
+          <span class="stat-label">Correct</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">⚡</span>
+          <span class="stat-value" id="resultTime">2:45</span>
+          <span class="stat-label">Time</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔥</span>
+          <span class="stat-value" id="resultStreak">Day 5</span>
+          <span class="stat-label">Streak</span>
+        </div>
+      </div>
+
+      <div class="results-actions">
+        <button class="btn btn-primary" data-nav="home">Back to Home</button>
+        <button class="btn btn-secondary" data-retry="true">Try Again</button>
+        <button class="btn btn-secondary" id="downloadCertBtn" title="Download Certificate">🏅 Certificate</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANALYTICS VIEW -->
+  <section id="view-analytics" class="view hidden">
+    <div class="view-header">
+      <h1>Your Statistics</h1>
+      <p>Track your quiz performance and progress</p>
+    </div>
+
+    <div class="analytics-grid">
+      <div class="analytics-card stat-summary">
+        <div class="summary-stat">
+          <span class="summary-value" id="statTotalQuizzes">0</span>
+          <span class="summary-label">Quizzes Taken</span>
+        </div>
+        <div class="summary-stat">
+          <span class="summary-value" id="statAvgScore">0%</span>
+          <span class="summary-label">Average Score</span>
+        </div>
+        <div class="summary-stat">
+          <span class="summary-value" id="statTotalXP">0</span>
+          <span class="summary-label">Total XP</span>
+        </div>
+        <div class="summary-stat">
+          <span class="summary-value" id="statStreak">0</span>
+          <span class="summary-label">Day Streak</span>
+        </div>
+      </div>
+
+      <div class="analytics-card">
+        <h3>Level Progress</h3>
+        <div class="level-display">
+          <span class="level-badge" id="analyticsLevel">Level 1</span>
+          <span class="level-name" id="analyticsLevelName">Newcomer</span>
+        </div>
+        <div class="xp-progress-bar">
+          <div class="xp-progress-fill" id="analyticsXPBar"></div>
+        </div>
+        <p class="xp-progress-text" id="analyticsXPText">0 / 100 XP to next level</p>
+      </div>
+
+      <div class="analytics-card">
+        <h3>Category Performance</h3>
+        <div id="categoryPerformance" class="category-bars"></div>
+      </div>
+
+      <div class="analytics-card">
+        <h3>Recent Activity</h3>
+        <div id="recentActivity" class="activity-list"></div>
+      </div>
+
+      <div class="analytics-card analytics-card-full">
+        <h3>Score Trend</h3>
+        <div id="scoreChart" class="score-chart"></div>
+      </div>
+
+      <div class="analytics-actions">
+        <button class="btn btn-secondary" id="downloadCertAnalyticsBtn">🏅 Download Certificate</button>
+        <button class="btn btn-ghost" data-nav="leaderboard">🏆 View Leaderboard</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD VIEW -->
+  <section id="view-leaderboard" class="view hidden">
+    <div class="view-header">
+      <h1>Leaderboard</h1>
+      <p>Top quiz players</p>
+    </div>
+
+    <div class="leaderboard-tabs">
+      <button class="tab active" data-lb-sort="xp">By XP</button>
+      <button class="tab" data-lb-sort="streak">By Streak</button>
+      <button class="tab" data-lb-sort="quizzes">By Quizzes</button>
+    </div>
+
+    <div class="leaderboard-list" id="leaderboardList"></div>
+  </section>
+
+  <!-- CERTIFICATE VIEW -->
+  <div class="modal-overlay" id="certModal">
+    <div class="modal modal-lg">
+      <button class="modal-close" data-close-modal>&times;</button>
+      <div class="certificate" id="certificate">
+        <div class="cert-border">
+          <div class="cert-inner">
+            <div class="cert-header">Certificate of Achievement</div>
+            <div class="cert-subtitle">This certifies that</div>
+            <div class="cert-name" id="certName">Player Name</div>
+            <div class="cert-subtitle">has successfully completed</div>
+            <div class="cert-quiz-title" id="certQuizTitle">Quiz Title</div>
+            <div class="cert-stats">
+              <div class="cert-stat">
+                <span class="cert-stat-value" id="certScore">95%</span>
+                <span class="cert-stat-label">Score</span>
+              </div>
+              <div class="cert-stat">
+                <span class="cert-stat-value" id="certXP">+200 XP</span>
+                <span class="cert-stat-label">XP Earned</span>
+              </div>
+              <div class="cert-stat">
+                <span class="cert-stat-value" id="certLevel">Level 5</span>
+                <span class="cert-stat-label">Current Level</span>
+              </div>
+            </div>
+            <div class="cert-date" id="certDate">July 16, 2026</div>
+            <div class="cert-footer">ChalkQuiz — Learn, Play, Excel</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" id="saveCertBtn">📥 Download Certificate</button>
+    </div>
+  </div>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
